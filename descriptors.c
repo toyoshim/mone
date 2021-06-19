@@ -115,14 +115,42 @@ static const uint8_t ngm_hid_report[] = {
   0xc0,  // end collection
 };
 
-const uint8_t* desc_device = ngm_device;
-const uint8_t* desc_configuration = ngm_configuration;
-const uint8_t* desc_string_0 = ngm_string_0;
-const uint8_t* desc_string_1 = ngm_string_1;
-const uint8_t* desc_hid_report = ngm_hid_report;
+const uint8_t* desc_device[] = {
+  ngm_device,
+};
 
-const uint8_t desc_len_device = sizeof(ngm_device);
-const uint8_t desc_len_configuration = sizeof(ngm_configuration);
-const uint8_t desc_len_string_0 = sizeof(ngm_string_0);
-const uint8_t desc_len_string_1 = sizeof(ngm_string_1);
-const uint8_t desc_len_hid_report = sizeof(ngm_hid_report);
+const uint8_t* desc_configuration[] = {
+  ngm_configuration,
+};
+
+const uint8_t* desc_string_0[] = {
+  ngm_string_0,
+};
+
+const uint8_t* desc_string_1[] = {
+  ngm_string_1,
+};
+
+const uint8_t* desc_hid_report[] = {
+  ngm_hid_report,
+};
+
+const uint8_t desc_len_device[] = {
+  sizeof(ngm_device),
+};
+
+const uint8_t desc_len_configuration[] = {
+  sizeof(ngm_configuration),
+};
+
+const uint8_t desc_len_string_0[] = {
+  sizeof(ngm_string_0),
+};
+
+const uint8_t desc_len_string_1[] = {
+  sizeof(ngm_string_1),
+};
+
+const uint8_t desc_len_hid_report[] = {
+  sizeof(ngm_hid_report),
+};

@@ -8,6 +8,8 @@
 
 #include "descriptors.h"
 
+static uint8_t mode = 0;
+
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
   Serial.printf("=== %s ===\n", message);
   for (uint8_t i = 0; i < size; ++i) {
@@ -26,20 +28,20 @@ uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
   switch (type) {
     case USB_DESC_DEVICE:
       Serial.println("Get DEVICE Descriptor\n");
-      return desc_len_device;
+      return desc_len_device[mode];
     case USB_DESC_CONFIGURATION:
-      return desc_len_configuration;
+      return desc_len_configuration[mode];
     case USB_DESC_STRING:
       switch (no) {
         case 0:  // language
-          return desc_len_string_0;
+          return desc_len_string_0[mode];
         case 1:  // manufacturer
-          return desc_len_string_1;
+          return desc_len_string_1[mode];
         default:
           return 0;
       }
     case USB_DESC_HID_REPORT:
-      return desc_len_hid_report;
+      return desc_len_hid_report[mode];
     default:
       return 0;
   }
@@ -48,20 +50,20 @@ uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
 const uint8_t* get_descriptor(uint8_t type, uint8_t no) {
   switch (type) {
     case USB_DESC_DEVICE:
-      return desc_device;
+      return desc_device[mode];
     case USB_DESC_CONFIGURATION:
-      return desc_configuration;
+      return desc_configuration[mode];
     case USB_DESC_STRING:
       switch (no) {
         case 0:  // language
-          return desc_string_0;
+          return desc_string_0[mode];
         case 1:  // manufacturer
-          return desc_string_1;
+          return desc_string_1[mode];
         default:
           return 0;
       }
     case USB_DESC_HID_REPORT:
-      return desc_hid_report;
+      return desc_hid_report[mode];
     default:
       return 0;
   }
