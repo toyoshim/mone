@@ -2,7 +2,7 @@ CFLAGS  = -V --Werror -mmcs51 --model-large --xram-size 0x1800 --xram-loc 0x0000
 CC      = sdcc
 FLASHER = ./CH55x_python_flasher/chflasher.py
 TARGET  = mone
-OBJS	= mone.rel ch559.rel usb_device.rel
+OBJS	= mone.rel descriptors.rel ch559.rel usb_device.rel
 
 all: $(TARGET).bin
 
@@ -16,7 +16,7 @@ run: program
 clean:
 	rm -f *.asm *.lst *.rel *.rst *.sym $(TARGET).bin $(TARGET).ihx $(TARGET).lk $(TARGET).map $(TARGET).mem
 
-%.rel: %.c chlib/*.h
+%.rel: %.c chlib/*.h *.h
 	$(CC) -c $(CFLAGS) $<
 
 ch559.rel: chlib/ch559.c chlib/*.h
