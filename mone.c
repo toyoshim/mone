@@ -8,7 +8,7 @@
 
 #include "descriptors.h"
 
-static uint8_t mode = 2;
+static uint8_t mode = 3;
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
   Serial.printf("=== %s ===\n", message);
@@ -100,7 +100,7 @@ void main() {
     uint8_t next = digitalRead(4, 6);
     if (last == HIGH && next == LOW) {
       mode++;
-      mode %= 3;
+      mode %= 4;
       usb_device_init(&device);
     }
     last = next;
