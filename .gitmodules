@@ -1,0 +1,3 @@
+[submodule "chlib"]
+	path = chlib
+	url = https://github.com/toyoshim/chlib.git
