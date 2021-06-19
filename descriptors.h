@@ -13,7 +13,8 @@
 //  0 - NEOGEO mini
 //  1 - MEGADRIVE mini / Astrocity mini
 //  2 - PC-Engine mini
-//  3 - Retro-Bit Generations
+//  3 - PlayStation classic
+//  4 - Retro-Bit Generations
 extern const uint8_t* desc_device[];
 extern const uint8_t* desc_configuration[];
 extern const uint8_t* desc_string_0[];
