@@ -8,7 +8,7 @@
 
 #include "descriptors.h"
 
-static uint8_t mode = 0;
+static uint8_t mode = 1;
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
   Serial.printf("=== %s ===\n", message);
@@ -27,7 +27,6 @@ static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
 uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
   switch (type) {
     case USB_DESC_DEVICE:
-      Serial.println("Get DEVICE Descriptor\n");
       return desc_len_device[mode];
     case USB_DESC_CONFIGURATION:
       return desc_len_configuration[mode];
@@ -35,8 +34,10 @@ uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
       switch (no) {
         case 0:  // language
           return desc_len_string_0[mode];
-        case 1:  // manufacturer
+        case 1:
           return desc_len_string_1[mode];
+        case 2:
+          return desc_len_string_2[mode];
         default:
           return 0;
       }
@@ -57,8 +58,10 @@ const uint8_t* get_descriptor(uint8_t type, uint8_t no) {
       switch (no) {
         case 0:  // language
           return desc_string_0[mode];
-        case 1:  // manufacturer
+        case 1:
           return desc_string_1[mode];
+        case 2:
+          return desc_string_2[mode];
         default:
           return 0;
       }
@@ -96,6 +99,8 @@ void main() {
   for (;;) {
     uint8_t next = digitalRead(4, 6);
     if (last == HIGH && next == LOW) {
+      mode++;
+      mode %= 2;
       usb_device_init(&device);
     }
     last = next;
