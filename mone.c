@@ -7,8 +7,10 @@
 #include "chlib/usb_device.h"
 
 #include "descriptors.h"
+#include "led.h"
 
 static uint8_t mode = 0;
+static uint8_t led = 0;
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
   Serial.printf("=== %s ===\n", message);
@@ -101,6 +103,8 @@ uint16_t buttons() {                // 7654 3210 bit
 void main() {
   initialize();
 
+  led_init(1, 5, HIGH);
+
   // Setup for Button
   pinMode(4, 6, INPUT_PULLUP);
 
@@ -117,7 +121,6 @@ void main() {
   delay(30);
   Serial.printf("\nBoot MONE v1.00\n");
 
-  pinMode(1, 5, OUTPUT);
   pinMode(4, 6, INPUT_PULLUP);
 
   struct usb_device device;
@@ -130,8 +133,11 @@ void main() {
   for (;;) {
     uint8_t next = digitalRead(4, 6);
     if (last == HIGH && next == LOW) {
-      //
+      led++;
+      led_oneshot(led);
+      Serial.printf("led: %d\n", led);
     }
     last = next;
+    led_update();
   }
 }

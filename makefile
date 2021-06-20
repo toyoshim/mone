@@ -2,7 +2,7 @@ CFLAGS  = -V --Werror -mmcs51 --model-large --xram-size 0x1800 --xram-loc 0x0000
 CC      = sdcc
 FLASHER = ./CH55x_python_flasher/chflasher.py
 TARGET  = mone
-OBJS	= mone.rel descriptors.rel ch559.rel usb_device.rel
+OBJS	= mone.rel descriptors.rel led.rel ch559.rel usb_device.rel
 
 all: $(TARGET).bin
 
