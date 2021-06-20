@@ -8,7 +8,7 @@
 
 #include "descriptors.h"
 
-static uint8_t mode = 3;
+static uint8_t mode = 0;
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
   Serial.printf("=== %s ===\n", message);
@@ -81,8 +81,39 @@ uint8_t ep1_in(char* buffer) {
   return 8;
 }
 
+uint8_t dipsw() {
+  return ~digitalReadPort(2) & 0x0f;
+}
+
+uint16_t buttons() {                // 7654 3210 bit
+  uint8_t p3 = digitalReadPort(3);  // LR12 34S6
+  uint8_t p4 = digitalReadPort(4);  // --5C DU--
+  uint16_t buttons =  // CSUD LP12 3456 ----
+      ((p4 & 0x10) << 11) |  // Coin
+      ((p3 & 0x02) << 13) |  // Start
+      ((p4 & 0x04) << 11) |  // Up
+      ((p4 & 0x08) <<  9) |  // Down
+      ((p3 & 0xfd) <<  4) |  // Left, Right, 1, 2, 3, 4, 6
+       (p4 & 0x20);          // 5
+  return buttons;
+}
+
 void main() {
   initialize();
+
+  // Setup for Button
+  pinMode(4, 6, INPUT_PULLUP);
+
+  // Setup for DIPSW
+  for (uint8_t pin = 0; pin <= 3; ++pin)
+    pinMode(2, pin, INPUT_PULLUP);
+
+  // Setup for Controller
+  for (uint8_t pin = 0; pin <= 7; ++pin)
+    pinMode(3, pin, INPUT_PULLUP);
+  for (uint8_t pin = 2; pin <= 5; ++pin)
+    pinMode(4, pin, INPUT_PULLUP);
+
   delay(30);
   Serial.printf("\nBoot MONE v1.00\n");
 
@@ -99,9 +130,7 @@ void main() {
   for (;;) {
     uint8_t next = digitalRead(4, 6);
     if (last == HIGH && next == LOW) {
-      mode++;
-      mode %= 4;
-      usb_device_init(&device);
+      //
     }
     last = next;
   }
