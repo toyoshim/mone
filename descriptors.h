@@ -9,6 +9,21 @@
 
 #include "chlib/usb.h"
 
+enum {
+  B_COIN,
+  B_START,
+  B_UP,
+  B_DOWN,
+  B_LEFT,
+  B_RIGHT,
+  B_1,
+  B_2,
+  B_3,
+  B_4,
+  B_5,
+  B_6,
+};
+
 // modes:
 //  0 - NEOGEO mini
 //  1 - MEGADRIVE mini / Astrocity mini
@@ -28,5 +43,8 @@ extern const uint8_t desc_len_string_0[];
 extern const uint8_t desc_len_string_1[];
 extern const uint8_t desc_len_string_2[];
 extern const uint8_t desc_len_hid_report[];
+
+uint8_t get_report(
+    uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* bufferr);
 
 #endif

@@ -9,21 +9,6 @@
 #include "descriptors.h"
 #include "led.h"
 
-enum {
-  B_COIN,
-  B_START,
-  B_UP,
-  B_DOWN,
-  B_LEFT,
-  B_RIGHT,
-  B_1,
-  B_2,
-  B_3,
-  B_4,
-  B_5,
-  B_6,
-};
-
 #define BUTTON_REVERSE_ROTATION
 
 static uint8_t mode = 1;
@@ -123,94 +108,8 @@ uint16_t buttons() {                // 7654 3210 bit
   return ~buttons;
 }
 
-uint8_t ngm_in(char* buffer) {
-  uint16_t b = buttons();
-  buffer[0] =
-      ((b & button_masks[B_3    ]) ? 0x10 : 0) |
-      ((b & button_masks[B_2    ]) ? 0x08 : 0) |
-      ((b & button_masks[B_1    ]) ? 0x02 : 0) |
-      ((b & button_masks[B_4    ]) ? 0x01 : 0);
-  buffer[1] =
-      ((b & button_masks[B_START]) ? 0x08 : 0) |
-      ((b & button_masks[B_COIN ]) ? 0x04 : 0);
-  uint8_t stick =
-      ((b & button_masks[B_UP   ]) ? 0x01 : 0) |
-      ((b & button_masks[B_DOWN ]) ? 0x02 : 0) |
-      ((b & button_masks[B_LEFT ]) ? 0x04 : 0) |
-      ((b & button_masks[B_RIGHT]) ? 0x08 : 0);
-  switch (stick) {
-    case 0x01:  // up
-      buffer[2] = 0;
-      break;
-    case 0x02:  // down
-      buffer[2] = 4;
-      break;
-    case 0x04:  // left
-      buffer[2] = 6;
-      break;
-    case 0x05:  // up-left
-      buffer[2] = 7;
-      break;
-    case 0x06:  // down-left
-      buffer[2] = 5;
-      break;
-    case 0x08:  // right
-      buffer[2] = 2;
-      break;
-    case 0x09:  // up-right
-      buffer[2] = 1;
-      break;
-    case 0x0a:  // down-right
-      buffer[2] = 3;
-      break;
-    default:
-      buffer[2] = 15;
-      break;
-  }
-  for (uint8_t i = 3; i < 8; ++i)
-    buffer[i] = 0;
-  return 8;
-}
-
-uint8_t mdm_in(char* buffer) {
-  uint8_t x = 127;
-  uint8_t y = 127;
-  uint16_t b = buttons();
-  if (b & button_masks[B_LEFT])
-    x = 0;
-  else if (b & button_masks[B_RIGHT])
-    x = 255;
-  if (b & button_masks[B_UP])
-    y = 0;
-  else if (b & button_masks[B_DOWN])
-    y = 255;
-  buffer[0] = 0;
-  buffer[1] = 0;
-  buffer[2] = 0;
-  buffer[3] = x;
-  buffer[4] = y;
-  buffer[5] =
-      ((b & button_masks[B_4]) ? 0x80 : 0) |  // X(3)
-      ((b & button_masks[B_1]) ? 0x40 : 0) |  // A(2)
-      ((b & button_masks[B_2]) ? 0x20 : 0) |  // B(1)
-      ((b & button_masks[B_5]) ? 0x10 : 0);   // Y(0)
-  buffer[6] =
-      ((b & button_masks[B_START]) ? 0x20 : 0) |  // 9
-      ((b & button_masks[B_COIN]) ? 0x10 : 0) |  // 8
-      ((b & button_masks[B_3]) ? 0x02 : 0) |  // C(5)
-      ((b & button_masks[B_6]) ? 0x01 : 0);   // Z(4)
-  return 8;
-}
-
-uint8_t ep1_in(char* buffer) {
-  switch (mode) {
-    case 0:
-      return ngm_in(buffer);
-    case 1:
-      return mdm_in(buffer);
-    default:
-      return 0;
-  }
+uint8_t ep1_in(uint8_t* buffer) {
+  return get_report(mode, buttons(), button_masks, buffer);
 }
 
 uint8_t dipsw() {

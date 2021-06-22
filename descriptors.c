@@ -546,3 +546,93 @@ const uint8_t desc_len_hid_report[] = {
   sizeof(pem_hid_report),
   sizeof(psc_hid_report),
 };
+
+uint8_t ngm_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  buffer[0] =
+      ((buttons & button_masks[B_3    ]) ? 0x10 : 0) |
+      ((buttons & button_masks[B_2    ]) ? 0x08 : 0) |
+      ((buttons & button_masks[B_1    ]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_4    ]) ? 0x01 : 0);
+  buffer[1] =
+      ((buttons & button_masks[B_START]) ? 0x08 : 0) |
+      ((buttons & button_masks[B_COIN ]) ? 0x04 : 0);
+  uint8_t stick =
+      ((buttons & button_masks[B_UP   ]) ? 0x01 : 0) |
+      ((buttons & button_masks[B_DOWN ]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_LEFT ]) ? 0x04 : 0) |
+      ((buttons & button_masks[B_RIGHT]) ? 0x08 : 0);
+  switch (stick) {
+    case 0x01:  // up
+      buffer[2] = 0;
+      break;
+    case 0x02:  // down
+      buffer[2] = 4;
+      break;
+    case 0x04:  // left
+      buffer[2] = 6;
+      break;
+    case 0x05:  // up-left
+      buffer[2] = 7;
+      break;
+    case 0x06:  // down-left
+      buffer[2] = 5;
+      break;
+    case 0x08:  // right
+      buffer[2] = 2;
+      break;
+    case 0x09:  // up-right
+      buffer[2] = 1;
+      break;
+    case 0x0a:  // down-right
+      buffer[2] = 3;
+      break;
+    default:
+      buffer[2] = 15;
+      break;
+  }
+  for (uint8_t i = 3; i < 8; ++i)
+    buffer[i] = 0;
+  return 8;
+}
+
+uint8_t mdm_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  uint8_t x = 127;
+  uint8_t y = 127;
+  if (buttons & button_masks[B_LEFT])
+    x = 0;
+  else if (buttons & button_masks[B_RIGHT])
+    x = 255;
+  if (buttons & button_masks[B_UP])
+    y = 0;
+  else if (buttons & button_masks[B_DOWN])
+    y = 255;
+  buffer[0] = 0;
+  buffer[1] = 0;
+  buffer[2] = 0;
+  buffer[3] = x;
+  buffer[4] = y;
+  buffer[5] =
+      ((buttons & button_masks[B_1]) ? 0x80 : 0) |  // X(3)
+      ((buttons & button_masks[B_4]) ? 0x40 : 0) |  // A(2)
+      ((buttons & button_masks[B_5]) ? 0x20 : 0) |  // B(1)
+      ((buttons & button_masks[B_2]) ? 0x10 : 0);   // Y(0)
+  buffer[6] =
+      ((buttons & button_masks[B_START]) ? 0x20 : 0) |  // 9
+      ((buttons & button_masks[B_COIN]) ? 0x10 : 0) |  // 8
+      ((buttons & button_masks[B_6]) ? 0x02 : 0) |  // C(5)
+      ((buttons & button_masks[B_3]) ? 0x01 : 0);   // Z(4)
+  return 8;
+}
+
+
+uint8_t get_report(
+    uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  switch (mode) {
+    case 0:
+      return ngm_in(buttons, button_masks, buffer);
+    case 1:
+      return mdm_in(buttons, button_masks, buffer);
+    default:
+      return 0;
+  }
+}
