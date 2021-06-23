@@ -9,10 +9,10 @@
 #include "descriptors.h"
 #include "led.h"
 
-#define BUTTON_REVERSE_ROTATION
+static uint8_t mode = NEOGEO_MINI;
 
-static uint8_t mode = PLAYSTATION_CLASSIC;
 static uint8_t led = 0;
+
 static uint16_t button_masks[14] = {
   (uint16_t)1 << 15,  // Coin
   (uint16_t)1 << 14,  // Start
@@ -31,8 +31,8 @@ static uint16_t button_masks[14] = {
 #endif  // BUTTON_REVERRSE_ROTATION
   (uint16_t)1 <<  5,  // 5
   (uint16_t)1 <<  4,  // 6
-  0,                  // 7
-  0,                  // 8
+  (uint16_t)1 <<  3,  // 7
+  (uint16_t)1 <<  2,  // 8
 };
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
@@ -157,5 +157,13 @@ void main() {
     }
     last = next;
     led_update();
+
+    uint8_t new_mode = dipsw() & 0x07;
+    if (new_mode >= NOT_ASSIGNED)
+      new_mode = NEOGEO_MINI;
+    if (mode != new_mode) {
+      mode = new_mode;
+      usb_device_init(&device);
+    }
   }
 }

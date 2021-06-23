@@ -14,6 +14,8 @@ enum {
   MEGADRIVE_MINI = 1,
   PC_ENGINE_MINI = 2,
   PLAYSTATION_CLASSIC = 3,
+  RETRO_BIT_GENERATIONS = 4,
+  NOT_ASSIGNED = 5,
 };
 
 enum {
@@ -29,14 +31,10 @@ enum {
   B_4,
   B_5,
   B_6,
+  B_7,
+  B_8,
 };
 
-// modes:
-//  0 - NEOGEO mini
-//  1 - MEGADRIVE mini / Astrocity mini
-//  2 - PC-Engine mini
-//  3 - PlayStation classic
-//  4 - Retro-Bit Generations
 extern const uint8_t* desc_device[];
 extern const uint8_t* desc_configuration[];
 extern const uint8_t* desc_string_0[];
