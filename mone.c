@@ -11,7 +11,7 @@
 
 #define BUTTON_REVERSE_ROTATION
 
-static uint8_t mode = 1;
+static uint8_t mode = 2;
 static uint8_t led = 0;
 static uint16_t button_masks[12] = {
   (uint16_t)1 << 15,  // Coin

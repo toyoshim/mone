@@ -547,6 +547,34 @@ const uint8_t desc_len_hid_report[] = {
   sizeof(psc_hid_report),
 };
 
+static uint8_t get_hat_value(uint16_t buttons, uint16_t* button_masks) {
+  uint8_t stick =
+      ((buttons & button_masks[B_UP   ]) ? 0x01 : 0) |
+      ((buttons & button_masks[B_DOWN ]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_LEFT ]) ? 0x04 : 0) |
+      ((buttons & button_masks[B_RIGHT]) ? 0x08 : 0);
+  switch (stick) {
+    case 0x01:  // up
+      return 0;
+    case 0x02:  // down
+      return 4;
+    case 0x04:  // left
+      return 6;
+    case 0x05:  // up-left
+      return 7;
+    case 0x06:  // down-left
+      return 5;
+    case 0x08:  // right
+      return 2;
+    case 0x09:  // up-right
+      return 1;
+    case 0x0a:  // down-right
+      return 3;
+    default:
+      return 15;
+  }
+}
+
 uint8_t ngm_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   buffer[0] =
       ((buttons & button_masks[B_3    ]) ? 0x10 : 0) |
@@ -556,40 +584,7 @@ uint8_t ngm_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   buffer[1] =
       ((buttons & button_masks[B_START]) ? 0x08 : 0) |
       ((buttons & button_masks[B_COIN ]) ? 0x04 : 0);
-  uint8_t stick =
-      ((buttons & button_masks[B_UP   ]) ? 0x01 : 0) |
-      ((buttons & button_masks[B_DOWN ]) ? 0x02 : 0) |
-      ((buttons & button_masks[B_LEFT ]) ? 0x04 : 0) |
-      ((buttons & button_masks[B_RIGHT]) ? 0x08 : 0);
-  switch (stick) {
-    case 0x01:  // up
-      buffer[2] = 0;
-      break;
-    case 0x02:  // down
-      buffer[2] = 4;
-      break;
-    case 0x04:  // left
-      buffer[2] = 6;
-      break;
-    case 0x05:  // up-left
-      buffer[2] = 7;
-      break;
-    case 0x06:  // down-left
-      buffer[2] = 5;
-      break;
-    case 0x08:  // right
-      buffer[2] = 2;
-      break;
-    case 0x09:  // up-right
-      buffer[2] = 1;
-      break;
-    case 0x0a:  // down-right
-      buffer[2] = 3;
-      break;
-    default:
-      buffer[2] = 15;
-      break;
-  }
+  buffer[2] = get_hat_value(buttons, button_masks);
   for (uint8_t i = 3; i < 8; ++i)
     buffer[i] = 0;
   return 8;
@@ -624,14 +619,28 @@ uint8_t mdm_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   return 8;
 }
 
+uint8_t pem_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  buffer[0] =
+      ((buttons & button_masks[B_2    ]) ? 0x04 : 0) |
+      ((buttons & button_masks[B_1    ]) ? 0x02 : 0);
+  buffer[1] =
+      ((buttons & button_masks[B_START]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_COIN ]) ? 0x01 : 0);
+  buffer[2] = get_hat_value(buttons, button_masks);
+  for (uint8_t i = 3; i < 8; ++i)
+    buffer[i] = 0;
+  return 8;
+}
 
 uint8_t get_report(
     uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   switch (mode) {
-    case 0:
+    case NEOGEO_MINI:
       return ngm_in(buttons, button_masks, buffer);
-    case 1:
+    case MEGADRIVE_MINI:
       return mdm_in(buttons, button_masks, buffer);
+    case PC_ENGINE_MINI:
+      return pem_in(buttons, button_masks, buffer);
     default:
       return 0;
   }
