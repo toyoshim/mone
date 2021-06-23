@@ -13,6 +13,7 @@ enum {
   NEOGEO_MINI = 0,
   MEGADRIVE_MINI = 1,
   PC_ENGINE_MINI = 2,
+  PLAYSTATION_CLASSIC = 3,
 };
 
 enum {

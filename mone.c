@@ -11,9 +11,9 @@
 
 #define BUTTON_REVERSE_ROTATION
 
-static uint8_t mode = 2;
+static uint8_t mode = PLAYSTATION_CLASSIC;
 static uint8_t led = 0;
-static uint16_t button_masks[12] = {
+static uint16_t button_masks[14] = {
   (uint16_t)1 << 15,  // Coin
   (uint16_t)1 << 14,  // Start
   (uint16_t)1 << 13,  // Up
@@ -31,6 +31,8 @@ static uint16_t button_masks[12] = {
 #endif  // BUTTON_REVERRSE_ROTATION
   (uint16_t)1 <<  5,  // 5
   (uint16_t)1 <<  4,  // 6
+  0,                  // 7
+  0,                  // 8
 };
 
 static void dump(const char* message, const uint8_t* buffer, uint8_t size) {

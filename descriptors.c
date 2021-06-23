@@ -632,6 +632,35 @@ uint8_t pem_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   return 8;
 }
 
+uint8_t psc_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  // 1x10, 2x2, 1x2p
+  // T, C, X, S, L2, R2, L1, R1, SL, ST
+  buffer[0] =
+      ((buttons & button_masks[B_6    ]) ? 0x80 : 0) |
+      ((buttons & button_masks[B_5    ]) ? 0x40 : 0) |
+      ((buttons & button_masks[B_6    ]) ? 0x20 : 0) |
+      ((buttons & button_masks[B_5    ]) ? 0x10 : 0) |
+      ((buttons & button_masks[B_4    ]) ? 0x08 : 0) |
+      ((buttons & button_masks[B_3    ]) ? 0x04 : 0) |
+      ((buttons & button_masks[B_2    ]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_1    ]) ? 0x01 : 0);
+  buffer[1] =
+      ((buttons & button_masks[B_START]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_COIN ]) ? 0x01 : 0);
+  uint8_t x = 1;
+  uint8_t y = 1;
+  if (buttons & button_masks[B_LEFT])
+    x = 0;
+  else if (buttons & button_masks[B_RIGHT])
+    x = 2;
+  if (buttons & button_masks[B_UP])
+    y = 0;
+  else if (buttons & button_masks[B_DOWN])
+    y = 2;
+  buffer[1] |= (x << 2) | (y << 4);
+  return 2;
+}
+
 uint8_t get_report(
     uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   switch (mode) {
@@ -641,6 +670,8 @@ uint8_t get_report(
       return mdm_in(buttons, button_masks, buffer);
     case PC_ENGINE_MINI:
       return pem_in(buttons, button_masks, buffer);
+    case PLAYSTATION_CLASSIC:
+      return psc_in(buttons, button_masks, buffer);
     default:
       return 0;
   }
