@@ -9,12 +9,14 @@
 
 #include "chlib/usb.h"
 
+// USB device mode
 enum {
   NEOGEO_MINI = 0,
   MEGADRIVE_MINI = 1,
   PC_ENGINE_MINI = 2,
   PLAYSTATION_CLASSIC = 3,
   RETRO_BIT_GENERATIONS = 4,
+
   NOT_ASSIGNED = 5,
 };
 

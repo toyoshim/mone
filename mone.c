@@ -8,43 +8,22 @@
 #include "chlib/usb_device.h"
 
 #include "descriptors.h"
+#include "settings.h"
 
 static uint8_t mode = NEOGEO_MINI;
 
 static uint8_t led = 0;
 
-static uint16_t button_masks[14] = {
-  (uint16_t)1 << 15,  // Coin
-  (uint16_t)1 << 14,  // Start
-  (uint16_t)1 << 13,  // Up
-  (uint16_t)1 << 12,  // Down
-  (uint16_t)1 << 11,  // Left
-  (uint16_t)1 << 10,  // Right
-#ifndef BUTTON_REVERSE_ROTATION
-  (uint16_t)1 <<  9,  // 1
-#endif  // BUTTON_REVERRSE_ROTATION
-  (uint16_t)1 <<  8,  // 2
-  (uint16_t)1 <<  7,  // 3
-  (uint16_t)1 <<  6,  // 4
-#ifdef BUTTON_REVERSE_ROTATION
-  (uint16_t)1 <<  9,  // 1
-#endif  // BUTTON_REVERRSE_ROTATION
-  (uint16_t)1 <<  5,  // 5
-  (uint16_t)1 <<  4,  // 6
-  (uint16_t)1 <<  3,  // 7
-  (uint16_t)1 <<  2,  // 8
-};
-
-static void dump(const char* message, const uint8_t* buffer, uint8_t size) {
+static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
   Serial.printf("=== %s ===\n", message);
-  for (uint8_t i = 0; i < size; ++i) {
+  for (uint16_t i = 0; i < size; ++i) {
     Serial.printc(buffer[i], HEX);
-    if (i % 16 == 15)
+    if (i % 32 == 31)
       Serial.println("");
     else
       Serial.print(", ");
   }
-  if (size % 16)
+  if (size % 32)
     Serial.println("");
   Serial.println("======");
 }
@@ -111,7 +90,7 @@ uint16_t buttons() {                // 7654 3210 bit
 }
 
 uint8_t ep1_in(uint8_t* buffer) {
-  return get_report(mode, buttons(), button_masks, buffer);
+  return get_report(mode, buttons(), settings[mode].button_masks, buffer);
 }
 
 uint8_t dipsw() {
@@ -120,6 +99,8 @@ uint8_t dipsw() {
 
 void main() {
   initialize();
+
+  settings_init();
 
   led_init(0, 7, LOW);
 
