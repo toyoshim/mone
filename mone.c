@@ -3,11 +3,11 @@
 // in the LICENSE file.
 
 #include "chlib/ch559.h"
+#include "chlib/led.h"
 #include "chlib/usb.h"
 #include "chlib/usb_device.h"
 
 #include "descriptors.h"
-#include "led.h"
 
 static uint8_t mode = NEOGEO_MINI;
 

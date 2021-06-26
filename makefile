@@ -22,6 +22,9 @@ clean:
 ch559.rel: chlib/ch559.c chlib/*.h
 	$(CC) -c $(CFLAGS) $<
 
+led.rel: chlib/led.c chlib/*.h
+	$(CC) -c $(CFLAGS) $<
+
 usb_device.rel: chlib/usb_device.c chlib/*.h
 	$(CC) -c $(CFLAGS) $<
 
