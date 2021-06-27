@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 #include "chlib/ch559.h"
+#include "chlib/timer3.h"
 #include "chlib/usb_device.h"
 #include "descriptors.h"
 #include "settings.h"
