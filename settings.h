@@ -8,8 +8,37 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// USB device mode
+enum {
+  NEOGEO_MINI,
+  MEGADRIVE_MINI,
+  PC_ENGINE_MINI,
+  PLAYSTATION_CLASSIC,
+  RETRO_BIT_GENERATIONS,
+
+  NOT_ASSIGNED,
+};
+
+// Button mask
+enum {
+  B_COIN,
+  B_START,
+  B_UP,
+  B_DOWN,
+  B_LEFT,
+  B_RIGHT,
+  B_1,
+  B_2,
+  B_3,
+  B_4,
+  B_5,
+  B_6,
+  B_7,
+  B_8,
+};
+
 struct setting {
-  uint8_t mode;  // USB device mode, see descriptors.h
+  uint8_t mode;  // USB device mode
   uint8_t speed;  // Rapid fire speed (flip per every N msec)
   uint16_t rapid_fire;
   uint16_t button_masks[14];
