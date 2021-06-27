@@ -37,21 +37,8 @@ enum {
   B_8,
 };
 
-extern const uint8_t* desc_device[];
-extern const uint8_t* desc_configuration[];
-extern const uint8_t* desc_string_0[];
-extern const uint8_t* desc_string_1[];
-extern const uint8_t* desc_string_2[];
-extern const uint8_t* desc_hid_report[];
-
-extern const uint8_t desc_len_device[];
-extern const uint8_t desc_len_configuration[];
-extern const uint8_t desc_len_string_0[];
-extern const uint8_t desc_len_string_1[];
-extern const uint8_t desc_len_string_2[];
-extern const uint8_t desc_len_hid_report[];
-
-uint8_t get_report(
-    uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* bufferr);
+uint8_t descriptors_size(uint8_t type, uint8_t no);
+const uint8_t* descriptors_get(uint8_t type, uint8_t no);
+uint8_t descriptors_report(uint8_t* buffer);
 
 #endif

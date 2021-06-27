@@ -5,6 +5,8 @@
 #include "descriptors.h"
 
 #include "chlib/usb.h"
+#include "controller.h"
+#include "settings.h"
 
 static const uint8_t ngm_device[] = {
   0x12,  // size
@@ -785,9 +787,60 @@ uint8_t rbg_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   return 2;
 }
 
-uint8_t get_report(
-    uint8_t mode, uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
-  switch (mode) {
+uint8_t descriptors_size(uint8_t type, uint8_t no) {
+  uint8_t mode = settings_current()->mode;
+  switch (type) {
+    case USB_DESC_DEVICE:
+      return desc_len_device[mode];
+    case USB_DESC_CONFIGURATION:
+      return desc_len_configuration[mode];
+    case USB_DESC_STRING:
+      switch (no) {
+        case 0:  // language
+          return desc_len_string_0[mode];
+        case 1:
+          return desc_len_string_1[mode];
+        case 2:
+          return desc_len_string_2[mode];
+        default:
+          return 0;
+      }
+    case USB_DESC_HID_REPORT:
+      return desc_len_hid_report[mode];
+    default:
+      return 0;
+  }
+}
+
+const uint8_t* descriptors_get(uint8_t type, uint8_t no) {
+  uint8_t mode = settings_current()->mode;
+  switch (type) {
+    case USB_DESC_DEVICE:
+      return desc_device[mode];
+    case USB_DESC_CONFIGURATION:
+      return desc_configuration[mode];
+    case USB_DESC_STRING:
+      switch (no) {
+        case 0:  // language
+          return desc_string_0[mode];
+        case 1:
+          return desc_string_1[mode];
+        case 2:
+          return desc_string_2[mode];
+        default:
+          return 0;
+      }
+    case USB_DESC_HID_REPORT:
+      return desc_hid_report[mode];
+    default:
+      return 0;
+  }
+}
+
+uint8_t descriptors_report(uint8_t* buffer) {
+  uint16_t buttons = controller_get();
+  uint16_t* button_masks = settings_current()->button_masks;
+  switch (settings_current()->mode) {
     case NEOGEO_MINI:
       return ngm_in(buttons, button_masks, buffer);
     case MEGADRIVE_MINI:
