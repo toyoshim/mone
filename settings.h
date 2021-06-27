@@ -59,7 +59,8 @@ extern struct setting settings[16];
 
 void settings_init();
 void settings_save();
-uint8_t settings_mode();
+
+uint16_t settings_mask();
 
 struct setting* settings_current();
 

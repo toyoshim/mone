@@ -838,7 +838,7 @@ const uint8_t* descriptors_get(uint8_t type, uint8_t no) {
 }
 
 uint8_t descriptors_report(uint8_t* buffer) {
-  uint16_t buttons = settings_mode() == S_NORMAL ? controller_get() : 0;
+  uint16_t buttons = controller_get() & settings_mask();
   uint16_t* button_masks = settings_current()->button_masks;
   switch (settings_current()->mode) {
     case U_NEOGEO_MINI:

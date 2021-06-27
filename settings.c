@@ -14,7 +14,9 @@ static uint8_t mode_step = 0;
 static uint16_t mode_data = 0;
 static uint8_t mode_dipsw = 0;
 static uint8_t usb_mode = U_NEOGEO_MINI;
-static uint16_t poll_tick = 0;
+static bool rapid_fire = false;
+static uint16_t rapid_msec = 0;
+static uint16_t poll_msec = 0;
 static const uint16_t poll_interval = 17;
 static uint8_t last_button = 0;
 
@@ -75,7 +77,7 @@ static void quit_speed() {
 }
 
 static void slow_poll() {
-  poll_tick += poll_interval;
+  poll_msec += poll_interval;
   uint8_t button = digitalRead(4, 6);
   if (last_button & !button) {
     switch (mode) {
@@ -161,7 +163,7 @@ void settings_init() {
 
   usb_mode = dipsw();
   last_button = digitalRead(4, 6);
-  poll_tick = timer3_tick_msec();
+  rapid_msec = poll_msec = timer3_tick_msec();
 }
 
 void settings_save() {
@@ -169,8 +171,10 @@ void settings_save() {
   flash_write(4, (const uint8_t*)settings, sizeof(settings));
 }
 
-uint8_t settings_mode() {
-  return mode;
+uint16_t settings_mask() {
+  if (mode != S_NORMAL)
+    return 0;
+  return rapid_fire ? ~settings_current()->rapid_fire : 0xffff;
 }
 
 struct setting* settings_current() {
@@ -178,8 +182,12 @@ struct setting* settings_current() {
 }
 
 bool settings_poll() {
-  if (!timer3_tick_msec_between(poll_tick, poll_tick + poll_interval))
+  if (!timer3_tick_msec_between(poll_msec, poll_msec + poll_interval))
     slow_poll();
+  if (!timer3_tick_msec_between(rapid_msec, rapid_msec + settings_current()->speed)) {
+    rapid_msec += settings_current()->speed;
+    rapid_fire = !rapid_fire;
+  }
 
   led_poll();
   uint8_t new_mode = dipsw();
