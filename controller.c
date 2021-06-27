@@ -16,7 +16,7 @@ void controller_init() {
 uint16_t controller_get() {         // 7654 3210 bit
   uint8_t p3 = digitalReadPort(3);  // LR12 34S6
   uint8_t p4 = digitalReadPort(4);  // --5C DU--
-  uint16_t buttons =  // CSUD LP12 3456 ----
+  uint16_t buttons = 0x0f |  // CSUD LP12 3456 ----
       ((p4 & 0x10) << 11) |  // Coin
       ((p3 & 0x02) << 13) |  // Start
       ((p4 & 0x04) << 11) |  // Up

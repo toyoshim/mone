@@ -7,8 +7,12 @@
 #include "chlib/ch559.h"
 #include "chlib/flash.h"
 #include "chlib/led.h"
+#include "controller.h"
 
 static uint8_t mode = S_NORMAL;
+static uint8_t mode_step = 0;
+static uint16_t mode_data = 0;
+static uint8_t mode_dipsw = 0;
 static uint8_t usb_mode = U_NEOGEO_MINI;
 static uint16_t poll_tick = 0;
 static const uint16_t poll_interval = 17;
@@ -20,14 +24,97 @@ static uint8_t dipsw() {
   return ~digitalReadPort(2) & 0x0f;
 }
 
+static void mode_layout() {
+  uint16_t buttons = controller_get() & 0x03ff;
+  if (mode_data && !buttons) {
+    if (mode_step < 8) {
+      settings[mode_dipsw].button_masks[B_1 + mode_step] = mode_data;
+      led_mode(L_FASTER_BLINK);
+    }
+    mode_data = 0;
+    mode_step++;
+  }
+  mode_data |= buttons;
+  if (mode_data)
+    led_mode(L_OFF);
+}
+
+static void quit_layout() {
+  for (uint8_t i = mode_step; i < 8; ++i)
+    settings[mode_dipsw].button_masks[B_1 + i] = 0;
+}
+
+static void mode_rapid() {
+  uint16_t buttons = controller_get() & 0x3ff;
+  if (mode_data && !buttons) {
+    settings[mode_dipsw].rapid_fire = mode_data;
+    led_mode(L_FAST_BLINK);
+    mode_data = 0;
+  }
+  mode_data |= buttons;
+  if (mode_data)
+    led_mode(L_OFF);
+}
+
+static void mode_speed() {
+  uint16_t buttons = controller_get() & 0x3ff;
+  if (buttons & 0x0040) {
+    settings[mode_dipsw].speed = 17;  // 30
+  } else if (buttons & 0x0080) {
+    settings[mode_dipsw].speed = 25;  // 20
+  } else if (buttons & 0x0100) {
+    settings[mode_dipsw].speed = 33;  // 15
+  } else if (buttons & 0x0200) {
+    settings[mode_dipsw].speed = 42;  // 12
+  }
+  led_mode((buttons & 0x03c0) ? L_OFF : L_BLINK);
+}
+
+static void quit_speed() {
+  settings_save();
+}
+
 static void slow_poll() {
   poll_tick += poll_interval;
   uint8_t button = digitalRead(4, 6);
   if (last_button & !button) {
+    switch (mode) {
+      case S_LAYOUT:
+        quit_layout();
+      case S_SPEED:
+        quit_speed();
+        break;
+    }
     mode = (mode + 1) % S_NOT_ASSIGNED;
-    // TODO
+    mode_step = 0;
+    mode_data = 0;
+    mode_dipsw = dipsw();
+    switch (mode) {
+      case S_NORMAL:
+        led_mode(L_ON);
+        break;
+      case S_LAYOUT:
+        led_mode(L_FASTER_BLINK);
+        break;
+      case S_RAPID:
+        led_mode(L_FAST_BLINK);
+        break;
+      case S_SPEED:
+        led_mode(L_BLINK);
+        break;
+    }
   }
-  // TODO
+  switch (mode) {
+    case S_LAYOUT:
+      mode_layout();
+      break;
+    case S_RAPID:
+      mode_rapid();
+      break;
+    case S_SPEED:
+      mode_speed();
+      break;
+  }
   last_button = button;
 }
 
