@@ -7,20 +7,6 @@
 #include "descriptors.h"
 #include "settings.h"
 
-static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
-  Serial.printf("=== %s ===\n", message);
-  for (uint16_t i = 0; i < size; ++i) {
-    Serial.printc(buffer[i], HEX);
-    if (i % 32 == 31)
-      Serial.println("");
-    else
-      Serial.print(", ");
-  }
-  if (size % 32)
-    Serial.println("");
-  Serial.println("======");
-}
-
 void main() {
   initialize();
   settings_init();
