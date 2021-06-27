@@ -8,8 +8,6 @@
 #include "descriptors.h"
 #include "settings.h"
 
-static uint8_t led = 0;
-
 static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
   Serial.printf("=== %s ===\n", message);
   for (uint16_t i = 0; i < size; ++i) {
@@ -33,9 +31,6 @@ void main() {
   pinMode(4, 6, INPUT_PULLUP);
 
   delay(30);
-  Serial.printf("\nBoot MONE v1.00\n");
-
-  pinMode(4, 6, INPUT_PULLUP);
 
   struct usb_device device;
   device.get_descriptor_size = descriptors_size;
@@ -43,17 +38,10 @@ void main() {
   device.ep1_in = descriptors_report;
   usb_device_init(&device);
 
-  uint8_t last = digitalRead(4, 6);
-  for (;;) {
-    uint8_t next = digitalRead(4, 6);
-    if (last == HIGH && next == LOW) {
-      led++;
-      led_oneshot(led);
-      Serial.printf("led: %d\n", led);
-    }
-    last = next;
-    led_update();
+  Serial.printf("\nBoot MONE v1.00\n");
 
+  for (;;) {
+    led_poll();
     if (settings_poll())
       usb_device_init(&device);
   }
