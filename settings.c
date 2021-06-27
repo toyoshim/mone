@@ -7,6 +7,7 @@
 #include "chlib/ch559.h"
 #include "chlib/flash.h"
 #include "chlib/led.h"
+#include "chlib/timer3.h"
 #include "controller.h"
 
 static uint8_t mode = S_NORMAL;
