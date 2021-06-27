@@ -8,15 +8,25 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// Settings mode
+enum {
+  S_NORMAL,
+  S_LAYOUT,
+  S_RAPID,
+  S_SPEED,
+
+  S_NOT_ASSIGNED,
+};
+
 // USB device mode
 enum {
-  NEOGEO_MINI,
-  MEGADRIVE_MINI,
-  PC_ENGINE_MINI,
-  PLAYSTATION_CLASSIC,
-  RETRO_BIT_GENERATIONS,
+  U_NEOGEO_MINI,
+  U_MEGADRIVE_MINI,
+  U_PC_ENGINE_MINI,
+  U_PLAYSTATION_CLASSIC,
+  U_RETRO_BIT_GENERATIONS,
 
-  NOT_ASSIGNED,
+  U_NOT_ASSIGNED,
 };
 
 // Button mask
@@ -49,6 +59,7 @@ extern struct setting settings[16];
 
 void settings_init();
 void settings_save();
+uint8_t settings_mode();
 
 struct setting* settings_current();
 

@@ -841,15 +841,15 @@ uint8_t descriptors_report(uint8_t* buffer) {
   uint16_t buttons = controller_get();
   uint16_t* button_masks = settings_current()->button_masks;
   switch (settings_current()->mode) {
-    case NEOGEO_MINI:
+    case U_NEOGEO_MINI:
       return ngm_in(buttons, button_masks, buffer);
-    case MEGADRIVE_MINI:
+    case U_MEGADRIVE_MINI:
       return mdm_in(buttons, button_masks, buffer);
-    case PC_ENGINE_MINI:
+    case U_PC_ENGINE_MINI:
       return pem_in(buttons, button_masks, buffer);
-    case PLAYSTATION_CLASSIC:
+    case U_PLAYSTATION_CLASSIC:
       return psc_in(buttons, button_masks, buffer);
-    case RETRO_BIT_GENERATIONS:
+    case U_RETRO_BIT_GENERATIONS:
       return rbg_in(buttons, button_masks, buffer);
     default:
       return 0;

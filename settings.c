@@ -6,8 +6,13 @@
 
 #include "chlib/ch559.h"
 #include "chlib/flash.h"
+#include "chlib/led.h"
 
-static uint8_t mode = 0;
+static uint8_t mode = S_NORMAL;
+static uint8_t usb_mode = U_NEOGEO_MINI;
+static uint16_t poll_tick = 0;
+static const uint16_t poll_interval = 17;
+static uint8_t last_button = 0;
 
 struct setting settings[16];
 
@@ -15,7 +20,23 @@ static uint8_t dipsw() {
   return ~digitalReadPort(2) & 0x0f;
 }
 
+static void slow_poll() {
+  poll_tick += poll_interval;
+  uint8_t button = digitalRead(4, 6);
+  if (last_button & !button) {
+    mode = (mode + 1) % S_NOT_ASSIGNED;
+    // TODO
+  }
+  // TODO
+  last_button = button;
+}
+
 void settings_init() {
+  led_init(0, 7, LOW);
+
+  // Setup for a button
+  pinMode(4, 6, INPUT_PULLUP);
+
   // Setup for DIPSW
   for (uint8_t pin = 0; pin <= 3; ++pin)
     pinMode(2, pin, INPUT_PULLUP);
@@ -51,7 +72,9 @@ void settings_init() {
   if (dirty)
     settings_save();
 
-  mode = dipsw();
+  usb_mode = dipsw();
+  last_button = digitalRead(4, 6);
+  poll_tick = timer3_tick_msec();
 }
 
 void settings_save() {
@@ -59,15 +82,23 @@ void settings_save() {
   flash_write(4, (const uint8_t*)settings, sizeof(settings));
 }
 
+uint8_t settings_mode() {
+  return mode;
+}
+
 struct setting* settings_current() {
-  return &settings[mode];
+  return &settings[usb_mode];
 }
 
 bool settings_poll() {
+  if (!timer3_tick_msec_between(poll_tick, poll_tick + poll_interval))
+    slow_poll();
+
+  led_poll();
   uint8_t new_mode = dipsw();
   bool changed = false;
-  if (settings[mode].mode != settings[new_mode].mode)
+  if (settings[usb_mode].mode != settings[new_mode].mode)
     changed = true;
-  mode = new_mode;
+  usb_mode = new_mode;
   return changed;
 }

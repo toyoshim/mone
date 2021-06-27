@@ -3,7 +3,6 @@
 // in the LICENSE file.
 
 #include "chlib/ch559.h"
-#include "chlib/led.h"
 #include "chlib/usb_device.h"
 #include "descriptors.h"
 #include "settings.h"
@@ -24,11 +23,7 @@ static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
 
 void main() {
   initialize();
-  led_init(0, 7, LOW);
   settings_init();
-
-  // Setup for Button
-  pinMode(4, 6, INPUT_PULLUP);
 
   delay(30);
 
@@ -41,7 +36,6 @@ void main() {
   Serial.printf("\nBoot MONE v1.00\n");
 
   for (;;) {
-    led_poll();
     if (settings_poll())
       usb_device_init(&device);
   }
