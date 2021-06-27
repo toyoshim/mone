@@ -4,13 +4,23 @@
 
 #include "settings.h"
 
-#include <stdbool.h>
-
+#include "chlib/ch559.h"
 #include "chlib/flash.h"
+
+static uint8_t mode = 0;
 
 struct setting settings[16];
 
+static uint8_t dipsw() {
+  return ~digitalReadPort(2) & 0x0f;
+}
+
 void settings_init() {
+  // Setup for DIPSW
+  for (uint8_t pin = 0; pin <= 3; ++pin)
+    pinMode(2, pin, INPUT_PULLUP);
+
+  // Initialize data in flash, and get a copy
   flash_init(*(uint32_t*)"MONE");
   flash_read(4, (uint8_t*)settings, sizeof(settings));
   bool dirty = false;
@@ -40,8 +50,24 @@ void settings_init() {
   }
   if (dirty)
     settings_save();
+
+  mode = dipsw();
 }
 
 void settings_save() {
+  // Store settings to flash
   flash_write(4, (const uint8_t*)settings, sizeof(settings));
+}
+
+struct setting* settings_current() {
+  return &settings[mode];
+}
+
+bool settings_poll() {
+  uint8_t new_mode = dipsw();
+  bool changed = false;
+  if (settings[mode].mode != settings[new_mode].mode)
+    changed = true;
+  mode = new_mode;
+  return changed;
 }

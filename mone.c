@@ -10,8 +10,6 @@
 #include "descriptors.h"
 #include "settings.h"
 
-static uint8_t mode = NEOGEO_MINI;
-
 static uint8_t led = 0;
 
 static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
@@ -29,6 +27,7 @@ static void dump(const char* message, const uint8_t* buffer, uint16_t size) {
 }
 
 uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
+  uint8_t mode = settings_current()->mode;
   switch (type) {
     case USB_DESC_DEVICE:
       return desc_len_device[mode];
@@ -53,6 +52,7 @@ uint8_t get_descriptor_size(uint8_t type, uint8_t no) {
 }
 
 const uint8_t* get_descriptor(uint8_t type, uint8_t no) {
+  uint8_t mode = settings_current()->mode;
   switch (type) {
     case USB_DESC_DEVICE:
       return desc_device[mode];
@@ -90,26 +90,16 @@ uint16_t buttons() {                // 7654 3210 bit
 }
 
 uint8_t ep1_in(uint8_t* buffer) {
-  return get_report(mode, buttons(), settings[mode].button_masks, buffer);
-}
-
-uint8_t dipsw() {
-  return ~digitalReadPort(2) & 0x0f;
+  return get_report(settings_current()->mode, buttons(), settings_current()->button_masks, buffer);
 }
 
 void main() {
   initialize();
-
-  settings_init();
-
   led_init(0, 7, LOW);
+  settings_init();
 
   // Setup for Button
   pinMode(4, 6, INPUT_PULLUP);
-
-  // Setup for DIPSW
-  for (uint8_t pin = 0; pin <= 3; ++pin)
-    pinMode(2, pin, INPUT_PULLUP);
 
   // Setup for Controller
   for (uint8_t pin = 0; pin <= 7; ++pin)
@@ -139,12 +129,7 @@ void main() {
     last = next;
     led_update();
 
-    uint8_t new_mode = dipsw() & 0x07;
-    if (new_mode >= NOT_ASSIGNED)
-      new_mode = NEOGEO_MINI;
-    if (mode != new_mode) {
-      mode = new_mode;
+    if (settings_poll())
       usb_device_init(&device);
-    }
   }
 }

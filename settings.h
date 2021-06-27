@@ -5,6 +5,7 @@
 #ifndef __settings_h__
 #define __settings_h__
 
+#include <stdbool.h>
 #include <stdint.h>
 
 struct setting {
@@ -19,5 +20,10 @@ extern struct setting settings[16];
 
 void settings_init();
 void settings_save();
+
+struct setting* settings_current();
+
+// Returns true if USB device reset is needed.
+bool settings_poll();
 
 #endif  // __settings_h__
