@@ -43,6 +43,8 @@ static void mode_layout() {
 }
 
 static void quit_layout() {
+  if (mode_step == 0)
+    return;
   for (uint8_t i = mode_step; i < 8; ++i)
     settings[mode_dipsw].button_masks[B_1 + i] = 0;
 }
