@@ -1,4 +1,4 @@
-# MONE - Mini console Oriented gamepad converter for NEOGEO.
+# MONE - Mini console Oriented NEOGEO converter
 
 ## Overview
 
