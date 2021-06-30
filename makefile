@@ -1,4 +1,4 @@
-CFLAGS  = -V --Werror -mmcs51 --model-large --xram-size 0x1800 --xram-loc 0x0000 --code-size 0xf000 --stack-auto
+CFLAGS  = -V --Werror -mmcs51 --model-large --xram-size 0x1800 --xram-loc 0x0000 --code-size 0xf000 --stack-auto -D_NO_UART0
 CC      = sdcc
 FLASHER = ./CH55x_python_flasher/chflasher.py
 TARGET  = mone
