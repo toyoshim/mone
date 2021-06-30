@@ -609,6 +609,9 @@ const uint8_t desc_len_device[] = {
   sizeof(pem_device),
   sizeof(psc_device),
   sizeof(rbg_device),
+  0,
+  0,
+  0,
 };
 
 const uint8_t desc_len_configuration[] = {
@@ -617,6 +620,9 @@ const uint8_t desc_len_configuration[] = {
   sizeof(pem_configuration),
   sizeof(psc_configuration),
   sizeof(rbg_configuration),
+  0,
+  0,
+  0,
 };
 
 const uint8_t desc_len_string_0[] = {
@@ -625,6 +631,9 @@ const uint8_t desc_len_string_0[] = {
   sizeof(string_0),
   sizeof(string_0),
   sizeof(string_0),
+  0,
+  0,
+  0,
 };
 
 const uint8_t desc_len_string_1[] = {
@@ -632,6 +641,9 @@ const uint8_t desc_len_string_1[] = {
   0,
   sizeof(pem_string_1),
   sizeof(psc_string_1),
+  0,
+  0,
+  0,
   0,
 };
 
@@ -641,6 +653,9 @@ const uint8_t desc_len_string_2[] = {
   sizeof(pem_string_2),
   sizeof(psc_string_2),
   sizeof(rbg_string_2),
+  0,
+  0,
+  0,
 };
 
 const uint8_t desc_len_hid_report[] = {
@@ -649,6 +664,9 @@ const uint8_t desc_len_hid_report[] = {
   sizeof(pem_hid_report),
   sizeof(psc_hid_report),
   sizeof(rbg_hid_report),
+  0,
+  0,
+  0,
 };
 
 static uint8_t get_hat_value(uint16_t buttons, uint16_t* button_masks) {
