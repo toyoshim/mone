@@ -50,7 +50,7 @@ By default, MONE assumes that the physical button layout is something like this:
 And each console mode maps these physical buttons into their own buttons.
 Here is the matrix.
 
-| Mode                  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| Mode \ Button         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |-----------------------|---|---|---|---|---|---|---|---|
 | NEOGEO mini           | B | C | D | A | - | - | - | - |
 | MEGADRIVE mini        | A | B | C | X | Y | Z | - | - |
