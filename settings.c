@@ -86,6 +86,7 @@ static void slow_poll() {
     switch (mode) {
       case S_LAYOUT:
         quit_layout();
+        break;
       case S_SPEED:
         quit_speed();
         break;
