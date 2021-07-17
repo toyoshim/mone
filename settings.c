@@ -30,8 +30,9 @@ static uint8_t dipsw() {
 static void mode_layout() {
   uint16_t buttons = controller_get() & 0x03ff;
   if (mode_data && !buttons) {
-    if (mode_step < 8) {
-      settings[mode_dipsw].button_masks[B_1 + mode_step] = mode_data;
+    if (mode_step < 10) {
+      uint8_t index = (mode_step < 2) ? mode_step : (mode_step + 4);
+      settings[mode_dipsw].button_masks[index] = mode_data;
       led_mode(L_FASTER_BLINK);
     }
     mode_data = 0;

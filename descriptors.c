@@ -93,6 +93,22 @@ static const uint8_t rbg_device[] = {
   0x01,  // number of configurations
 };
 
+static const uint8_t c64_device[] = {
+  0x12,  // size
+  USB_DESC_DEVICE,
+  0x10, 0x01,  // USB version
+  0x00,  // device class
+  0x00,  // device subclass
+  0x00,  // protocol
+  0x40,  // max packet size
+  0x59, 0x1c,  // vendor ID
+  0x23, 0x00,  // device ID
+  0x21, 0x00,  // device version
+  0x01,  // manufacturer string index
+  0x02,  // product string index
+  0x00,  // serial number string index
+  0x01,  // number of configurations
+};
 
 static const uint8_t ngm_configuration[] = {
   0x09,  // size
@@ -305,6 +321,46 @@ static const uint8_t rbg_configuration[] = {
   0x0a,  // poll interval 10ms
 };
 
+static const uint8_t c64_configuration[] = {
+  0x09,  // size
+  USB_DESC_CONFIGURATION,
+  0x22, 0x00,  // total length
+  0x01,  // number of interfaces
+  0x01,  // index of this configuration
+  0x00,  // configuration name string index
+  0x80,  // attributes
+  0x32,  // 100mA
+
+  // interface descriptor
+  0x09,  // size
+  USB_DESC_INTERFACE,
+  0x00,  // index of this interface
+  0x00,  // alternate setting for this interface
+  0x01,  // number of endpoints
+  0x03,  // interface class (HID)
+  0x00,  // interface subclass
+  0x00,  // interface protocol
+  0x00,  // string index for interface
+
+  // hid report descriptor
+  0x09,  // size
+  USB_DESC_HID,
+  0x10, 0x01,  // BCD representation of HID verrsion
+  0x21,  // target country code
+  0x01,  // number of HID report
+  USB_DESC_HID_REPORT,
+  0x5a, 0x00,  // descriptor length
+
+  // endpoint descriptor
+  0x07,  // size
+  USB_DESC_ENDPOINT,
+  0x81,  // IN endpoint number 1
+  0x03,  // attribute: interrurpt endpoint
+  0x80, 0x00,  // maximum packet size
+  0x0a,  // poll interval 10ms
+};
+
+
 static const uint8_t string_0[] = { 0x04, 0x03, 0x09, 0x04 };  // language descriptor
 
 static const uint8_t ngm_string_1[] = { 0x06, 0x03, 'J', 0, 'J', 0 };
@@ -345,6 +401,13 @@ static const uint8_t rbg_string_2[] = {
   0x1a, 0x03,
   'U', 0, 'S', 0, 'B', 0, ' ', 0, 'G', 0, 'a', 0, 'm', 0, 'e', 0,
   'p', 0, 'a', 0, 'd', 0, ' ', 0,
+};
+
+static const uint8_t c64_string_1_2[] = {
+  0x28, 0x033,
+  ' ', 0, 'T', 0, 'H', 0, 'E', 0, 'C', 0, '6', 0, '4', 0, ' ', 0,
+  'J', 0, 'o', 0, 'y', 0, 's', 0, 't', 0, 'i', 0, 'c', 0, 'k', 0,
+  ' ', 0, ' ', 0, ' ', 0,
 };
 
 static const uint8_t ngm_hid_report[] = {
@@ -554,12 +617,60 @@ static char rbg_hid_report[] = {
   0xc0,  // end collection
 };
 
+static char c64_hid_report[] = {
+  0x05, 0x01,  // usage page (desktop)
+  0x09, 0x04,  // usage (sport control)
+  0xa1, 0x01,  // collection (application)
+  0xa1, 0x02,  // collection (logical)
+  0x75, 0x08,  // report size (8)
+  0x95, 0x05,  // report count (5)
+  0x15, 0x00,  // logical minimum (0)
+  0x26, 0xff, 0x00,  // logical maximum (255)
+  0x35, 0x00,  // physical minimum (0)
+  0x46, 0xff, 0x00,  // physical maximum (255)
+  0x09, 0x30,  // usage (x)
+  0x09, 0x31,  // usage (y)
+  0x09, 0x31,  // usage (y)
+  0x09, 0x31,  // usage (y)
+  0x09, 0x31,  // usage (y)
+  0x81, 0x02,  // input (variable)
+  0x75, 0x04,  // report size (4)
+  0x95, 0x01,  // report count (1)
+  0x81, 0x01,  // input (const)
+  0x75, 0x01,  // report size (1)
+  0x95, 0x0c,  // report count (12)
+  0x25, 0x01,  // logical maximum (1)
+  0x45, 0x01,  // physical maximum (1)
+  0x05, 0x09,  // usage page (button)
+  0x19, 0x01,  // usage minimum (1)
+  0x29, 0x08,  // usage maximum (8)
+  0x81, 0x02,  // input (variable)
+  0x06, 0x00, 0xff,  // usage page (vendor)
+  0x75, 0x01,  // report size (1)
+  0x95, 0x08,  // report count (8)
+  0x25, 0x01,  // logical maximum (1)
+  0x45, 0x01,  // physical maximum (1)
+  0x09, 0x01,  // usage (vendor)
+  0x81, 0x02,  // input (variable)
+  0xc0,  // end collection
+  0xa1, 0x02,  // collection (logical)
+  0x75, 0x08,  // report size (8)
+  0x95, 0x07,  // report count (7)
+  0x46, 0xff, 0x00,  // physical maximum (255)
+  0x26, 0xff, 0x00,  // logical maximum (255)
+  0x09, 0x02,  // usage (mouse)
+  0x91, 0x02,  // output (variable)
+  0xc0,  // end collection
+  0xc0,  // end collection
+};
+
 const uint8_t* desc_device[] = {
   ngm_device,
   mdm_device,
   pem_device,
   psc_device,
   rbg_device,
+  c64_device,
 };
 
 const uint8_t* desc_configuration[] = {
@@ -568,9 +679,11 @@ const uint8_t* desc_configuration[] = {
   pem_configuration,
   psc_configuration,
   rbg_configuration,
+  c64_configuration,
 };
 
 const uint8_t* desc_string_0[] = {
+  string_0,
   string_0,
   string_0,
   string_0,
@@ -584,6 +697,7 @@ const uint8_t* desc_string_1[] = {
   pem_string_1,
   psc_string_1,
   0,
+  c64_string_1_2,
 };
 
 const uint8_t* desc_string_2[] = {
@@ -592,6 +706,7 @@ const uint8_t* desc_string_2[] = {
   pem_string_2,
   psc_string_2,
   rbg_string_2,
+  c64_string_1_2,
 };
 
 
@@ -601,70 +716,71 @@ const uint8_t* desc_hid_report[] = {
   pem_hid_report,
   psc_hid_report,
   rbg_hid_report,
+  c64_hid_report,
 };
 
-const uint8_t desc_len_device[] = {
+const uint8_t desc_len_device[8] = {
   sizeof(ngm_device),
   sizeof(mdm_device),
   sizeof(pem_device),
   sizeof(psc_device),
   sizeof(rbg_device),
-  0,
+  sizeof(c64_device),
   0,
   0,
 };
 
-const uint8_t desc_len_configuration[] = {
+const uint8_t desc_len_configuration[8] = {
   sizeof(ngm_configuration),
   sizeof(mdm_configuration),
   sizeof(pem_configuration),
   sizeof(psc_configuration),
   sizeof(rbg_configuration),
-  0,
-  0,
-  0,
-};
-
-const uint8_t desc_len_string_0[] = {
-  sizeof(string_0),
-  sizeof(string_0),
-  sizeof(string_0),
-  sizeof(string_0),
-  sizeof(string_0),
-  0,
+  sizeof(c64_configuration),
   0,
   0,
 };
 
-const uint8_t desc_len_string_1[] = {
+const uint8_t desc_len_string_0[8] = {
+  sizeof(string_0),
+  sizeof(string_0),
+  sizeof(string_0),
+  sizeof(string_0),
+  sizeof(string_0),
+  sizeof(string_0),
+  0,
+  0,
+};
+
+const uint8_t desc_len_string_1[8] = {
   sizeof(ngm_string_1),
   0,
   sizeof(pem_string_1),
   sizeof(psc_string_1),
   0,
-  0,
+  sizeof(c64_string_1_2),
   0,
   0,
 };
 
-const uint8_t desc_len_string_2[] = {
+const uint8_t desc_len_string_2[8] = {
   0,
   sizeof(mdm_string_2),
   sizeof(pem_string_2),
   sizeof(psc_string_2),
   sizeof(rbg_string_2),
-  0,
+  sizeof(c64_string_1_2),
   0,
   0,
 };
 
-const uint8_t desc_len_hid_report[] = {
+const uint8_t desc_len_hid_report[8] = {
   sizeof(ngm_hid_report),
   sizeof(mdm_hid_report),
   sizeof(pem_hid_report),
   sizeof(psc_hid_report),
   sizeof(rbg_hid_report),
-  0,
+  sizeof(c64_hid_report),
   0,
   0,
 };
@@ -805,6 +921,33 @@ uint8_t rbg_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
   return 2;
 }
 
+uint8_t c64_in(uint16_t buttons, uint16_t* button_masks, uint8_t* buffer) {
+  uint8_t x = 0x7f;
+  if (buttons & button_masks[B_LEFT])
+    x = 0x00;
+  else if (buttons & button_masks[B_RIGHT])
+    x = 0xff;
+  buffer[0] = x;
+  uint8_t y = 0x7f;
+  if (buttons & button_masks[B_UP])
+    y = 0x00;
+  else if (buttons & button_masks[B_DOWN])
+    y = 0xff;
+  buffer[1] = buffer[2] = buffer[3] = buffer[4] = y;
+  buffer[5] = 0x0f |
+      ((buttons & button_masks[B_1    ]) ? 0x10 : 0) |
+      ((buttons & button_masks[B_2    ]) ? 0x20 : 0) |
+      ((buttons & button_masks[B_3    ]) ? 0x40 : 0) |
+      ((buttons & button_masks[B_4    ]) ? 0x80 : 0);
+  buffer[6] =
+      ((buttons & button_masks[B_6    ]) ? 0x01 : 0) |
+      ((buttons & button_masks[B_5    ]) ? 0x02 : 0) |
+      ((buttons & button_masks[B_COIN ]) ? 0x04 : 0) |
+      ((buttons & button_masks[B_START]) ? 0x08 : 0);
+  buffer[7] = 0x40;
+  return 8;
+}
+
 uint8_t descriptors_size(uint8_t type, uint8_t no) {
   uint8_t mode = settings_current()->mode;
   switch (type) {
@@ -869,6 +1012,8 @@ uint8_t descriptors_report(uint8_t* buffer) {
       return psc_in(buttons, button_masks, buffer);
     case U_RETRO_BIT_GENERATIONS:
       return rbg_in(buttons, button_masks, buffer);
+    case U_THE_C64_MINI:
+      return c64_in(buttons, button_masks, buffer);
     default:
       return 0;
   }

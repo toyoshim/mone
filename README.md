@@ -10,6 +10,7 @@ Currently it supports
 - PC-Engine mini
 - Playstation Classic
 - Retro-bit Generations IV (and maybe other variants)
+- THE C64 MINI
 
 Also it supports features to configure button layout, and assign rapid fire mode for arbitrary buttons.
 
@@ -27,7 +28,7 @@ Here is the list for DIPSW.
 - 010x: PC-Engine mini
 - 110x: Playstation Classic
 - 001x: Retro-bit Generations
-- 101x: (reserved)
+- 101x: THE C64 MINI
 - 011x: (reserved)
 - 111x: (reserved)
 
@@ -50,22 +51,24 @@ By default, MONE assumes that the physical button layout is something like this:
 And each console mode maps these physical buttons into their own buttons.
 Here is the matrix.
 
-| Mode \ Button         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-|-----------------------|---|---|---|---|---|---|---|---|
-| NEOGEO mini           | B | C | D | A | - | - | - | - |
-| MEGADRIVE mini        | A | B | C | X | Y | Z | - | - |
-| PC-Engine mini        | II| I | - | - | - | - | - | - |
-| Playstation Classic   | □ | × | ○ | △ |L2 |R2 |L1 |R1 |
-| Retro-bit Generations | 1 | 2 | 3 | 4 | 5 | 6 | - | - |
+| Mode \ Button         | COIN |START| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|-----------------------|------|-----|---|---|---|---|---|---|---|---|
+| NEOGEO mini           |SELECT|START| B | C | D | A | - | - | - | - |
+| MEGADRIVE mini        | HOME |START| A | B | C | X | Y | Z | - | - |
+| PC-Engine mini        |SELECT| RUN |II | I | - | - | - | - | - | - |
+| Playstation Classic   |SELECT|START| □ | × | ○ | △ |L2 |R2 |L1 |R1 |
+| Retro-bit Generations | MODE |START| 1 | 2 | 3 | 4 | 5 | 6 | - | - |
+| THE C64 MINI          |  C   |MENU |LF |RF |TL |TR | A | B | - | - |
 
 You can change the layout for each mode as follows.
 
 Steps:
 
 1. Puth the button on the PCB
-2. Push gamepad buttons for the logical button 1 (e.g. B on NEOGEO mini), and release them
-3. Push gamepad buttons for the logical button 2 (e.g. C on NEOGEO mini), and release them
-4. Continue for 3, 4, ..., and 8
+2. Push gamepad buttons for the logical coin (e.g. B on NEOGEO mini), and release them
+3. Push gamepad buttons for the logical start (e.g. C on NEOGEO mini), and release them
+4. Push gamepad buttons for the logical button 1 (e.g. C on NEOGEO mini), and release them
+4. Continue for 2, 3, ..., and 8
 5. Push the button on the PCB to configure rapid fire buttons
 
 You can quit the layout configuration mode anytime by pushing the button on the PCB.
