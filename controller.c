@@ -4,7 +4,7 @@
 
 #include "controller.h"
 
-#include "chlib/ch559.h"
+#include "ch559.h"
 
 void controller_init() {
   for (uint8_t pin = 0; pin <= 7; ++pin)

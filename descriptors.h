@@ -9,6 +9,6 @@
 
 uint8_t descriptors_size(uint8_t type, uint8_t no);
 const uint8_t* descriptors_get(uint8_t type, uint8_t no);
-uint8_t descriptors_report(uint8_t* buffer);
+uint8_t descriptors_report(uint8_t no, uint8_t* buffer);
 
 #endif

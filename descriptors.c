@@ -4,7 +4,8 @@
 
 #include "descriptors.h"
 
-#include "chlib/usb.h"
+#include "usb.h"
+
 #include "controller.h"
 #include "settings.h"
 
@@ -998,7 +999,8 @@ const uint8_t* descriptors_get(uint8_t type, uint8_t no) {
   }
 }
 
-uint8_t descriptors_report(uint8_t* buffer) {
+uint8_t descriptors_report(uint8_t no, uint8_t* buffer) {
+  no;
   uint16_t buttons = controller_get() & settings_mask();
   uint16_t* button_masks = settings_current()->button_masks;
   switch (settings_current()->mode) {
